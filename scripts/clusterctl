@@ -1,0 +1,126 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# JABA JOBS remote helper.
+#
+# Install on cluster-login as /usr/local/sbin/clusterctl and allow only trusted
+# admins to run it with sudo -n. This script intentionally keeps privileged
+# operations server-side instead of asking the desktop app to handle sudo,
+# passwd, or a second SSH password.
+
+usage() {
+  cat <<'EOF'
+Usage:
+  clusterctl gpu-info a4000
+  clusterctl machine-info
+  clusterctl create-user <usuario> <admin_dell>
+  clusterctl passwd-reset <usuario>
+  clusterctl health
+EOF
+}
+
+die() {
+  printf 'clusterctl: %s\n' "$*" >&2
+  exit 1
+}
+
+valid_user() {
+  [[ "${1:-}" =~ ^[a-z_][a-z0-9_-]*[$]?$ ]]
+}
+
+require_root() {
+  if [[ "$(id -u)" -ne 0 ]]; then
+    die "execute via sudo -n /usr/local/sbin/clusterctl"
+  fi
+}
+
+gpu_info_a4000() {
+  local target="${CLUSTERCTL_A4000_SSH_TARGET:-gpu-a4000}"
+  local ssh_opts=(
+    -o BatchMode=yes
+    -o ConnectTimeout=5
+    -o StrictHostKeyChecking=accept-new
+  )
+
+  if ssh "${ssh_opts[@]}" "$target" \
+    'nvidia-smi --query-gpu=name,memory.total,memory.used,memory.free,utilization.gpu --format=csv,noheader,nounits; echo "---"; nvidia-smi'; then
+    return 0
+  fi
+
+  printf 'A4000 direct nvidia-smi unavailable via SSH target %s.\n' "$target"
+  printf 'Slurm node fallback:\n'
+  scontrol show node gpu-a4000 2>&1 || true
+  return 1
+}
+
+machine_info() {
+  printf 'cluster-login\n'
+  hostname
+  free -h
+  df -h --total -x tmpfs -x devtmpfs -x squashfs -x overlay 2>/dev/null || df -h /
+  nvidia-smi --query-gpu=name,memory.total,memory.used,memory.free,utilization.gpu --format=csv,noheader,nounits 2>&1 || true
+  printf '\n--- gpu-a4000 slurm ---\n'
+  scontrol show node gpu-a4000 2>&1 || true
+}
+
+create_user() {
+  require_root
+  local user="${1:-}"
+  local dell_admin="${2:-}"
+  valid_user "$user" || die "usuario Linux invalido"
+  [[ -n "$dell_admin" ]] || die "admin_dell obrigatorio"
+  [[ -x /usr/local/sbin/novo_usuario.sh ]] || die "/usr/local/sbin/novo_usuario.sh nao encontrado ou nao executavel"
+
+  /usr/local/sbin/novo_usuario.sh "$user" "$dell_admin"
+  printf '\nUsuario %s criado/replicado.\n' "$user"
+  printf 'Defina a senha manualmente no cluster-login: sudo passwd %s\n' "$user"
+}
+
+passwd_reset() {
+  require_root
+  local user="${1:-}"
+  valid_user "$user" || die "usuario Linux invalido"
+  printf 'Por seguranca, o MVP nao automatiza passwd interativo.\n'
+  printf 'Execute manualmente: sudo passwd %s\n' "$user"
+}
+
+health() {
+  printf 'clusterctl ok\n'
+  command -v scontrol >/dev/null && scontrol ping || true
+  command -v sinfo >/dev/null && sinfo || true
+  printf '\nA4000 GPU info check:\n'
+  gpu_info_a4000 || true
+}
+
+main() {
+  local action="${1:-}"
+  shift || true
+
+  case "$action" in
+    gpu-info)
+      [[ "${1:-}" == "a4000" ]] || die "gpu-info suporta apenas: a4000"
+      gpu_info_a4000
+      ;;
+    machine-info)
+      machine_info
+      ;;
+    create-user)
+      create_user "$@"
+      ;;
+    passwd-reset)
+      passwd_reset "$@"
+      ;;
+    health)
+      health
+      ;;
+    -h|--help|"")
+      usage
+      ;;
+    *)
+      usage >&2
+      exit 2
+      ;;
+  esac
+}
+
+main "$@"

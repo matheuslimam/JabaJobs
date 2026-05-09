@@ -1,0 +1,8 @@
+# Allow JABA JOBS admins to run only the clusterctl helper without an
+# interactive sudo password.
+#
+# Install with:
+#   sudo install -o root -g root -m 0440 scripts/clusterctl.sudoers /etc/sudoers.d/clusterctl
+#   sudo visudo -cf /etc/sudoers.d/clusterctl
+
+%clusteradmins ALL=(root) NOPASSWD: /usr/local/sbin/clusterctl
