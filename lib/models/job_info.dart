@@ -23,4 +23,15 @@ class JobInfo {
 
   bool get isRunning => state.toUpperCase().startsWith('R');
   bool get isPending => state.toUpperCase().startsWith('PD');
+  bool get isActive => isRunning || isPending;
+  bool get hasErrorState {
+    final normalized = state.toUpperCase().replaceAll(' ', '_');
+    return normalized.startsWith('FAIL') ||
+        normalized.startsWith('CANCEL') ||
+        normalized.startsWith('TIMEOUT') ||
+        normalized.startsWith('OUT_OF_MEMORY') ||
+        normalized.startsWith('OOM') ||
+        normalized.startsWith('NODE_FAIL') ||
+        normalized.startsWith('PREEMPT');
+  }
 }

@@ -45,6 +45,16 @@ class LogsPage extends StatelessWidget {
                   Switch(value: state.followLog, onChanged: state.setFollowLog),
                 ],
               ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Notificar'),
+                  Switch(
+                    value: state.notifyOnSelectedJobEvent,
+                    onChanged: state.setNotifyOnSelectedJobEvent,
+                  ),
+                ],
+              ),
               OutlinedButton.icon(
                 onPressed: state.loadSelectedJobStatus,
                 icon: const Icon(Icons.info_outline),
@@ -67,6 +77,14 @@ class LogsPage extends StatelessWidget {
             children: [
               JabaProgressCard(logText: '${state.jobStatus}\n${state.jobLog}'),
               const SizedBox(height: 14),
+              if (state.jobMonitorAlert != null) ...[
+                _MonitorAlertText(
+                  title: state.jobMonitorAlert!.title,
+                  message: state.jobMonitorAlert!.message,
+                  isError: state.jobMonitorAlert!.isError,
+                ),
+                const SizedBox(height: 14),
+              ],
               if (state.jobStatus.trim().isNotEmpty) ...[
                 TerminalOutput(text: state.jobStatus, minHeight: 120),
                 const SizedBox(height: 14),
@@ -83,6 +101,48 @@ class LogsPage extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+class _MonitorAlertText extends StatelessWidget {
+  const _MonitorAlertText({
+    required this.title,
+    required this.message,
+    required this.isError,
+  });
+
+  final String title;
+  final String message;
+  final bool isError;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isError
+        ? Theme.of(context).colorScheme.error
+        : Theme.of(context).colorScheme.secondary;
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.32)),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            isError ? Icons.error_outline : Icons.notifications_active_outlined,
+            color: color,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              '$title\n$message',
+              style: TextStyle(color: color, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

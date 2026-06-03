@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dartssh2/dartssh2.dart';
 
@@ -40,9 +42,12 @@ class SshService {
     } catch (error) {
       close();
       throw SshConnectionException(
-        'Não foi possível conectar por SSH.',
-        details:
-            'Confira se o Tailscale está conectado, se o host está correto e se usuário/senha estão válidos.\n$error',
+        'Nao foi possivel conectar por SSH.',
+        details: _buildConnectionFailureDetails(
+          host: profile.host.trim(),
+          port: profile.port,
+          error: error,
+        ),
       );
     }
   }
@@ -53,7 +58,7 @@ class SshService {
   }) async {
     final client = _client;
     if (client == null) {
-      throw const SshConnectionException('Não há uma sessão SSH ativa.');
+      throw const SshConnectionException('Nao ha uma sessao SSH ativa.');
     }
 
     final wrappedCommand = 'bash -lc ${shellQuote(command)}';
@@ -107,5 +112,64 @@ class SshService {
     _client = null;
     _host = null;
     _username = null;
+  }
+
+  String _buildConnectionFailureDetails({
+    required String host,
+    required int port,
+    required Object error,
+  }) {
+    final rawError = error.toString();
+    final lower = rawError.toLowerCase();
+    final timedOut =
+        error is TimeoutException ||
+        error is SocketException && lower.contains('timed out');
+    final refused = lower.contains('connection refused');
+    final authLike =
+        lower.contains('auth') ||
+        lower.contains('password') ||
+        lower.contains('permission denied');
+
+    final details = StringBuffer();
+    if (timedOut) {
+      details.writeln('O Android nao conseguiu abrir TCP em $host:$port.');
+      if (_looksLikeTailscaleIp(host)) {
+        details.writeln(
+          'Como o host e um IP Tailscale, o celular tambem precisa estar no Tailscale: app Tailscale instalado, logado no mesmo tailnet, VPN ativa e ACL liberando SSH para esse node.',
+        );
+        details.writeln(
+          'Estar conectado ao Tailscale no PC nao coloca o APK do celular dentro da rede Tailscale.',
+        );
+      }
+      details.writeln(
+        'Teste decisivo: no proprio Android, tente SSH para $host:$port usando Termux ou outro cliente SSH. Se tambem der timeout, o problema e Tailscale/rota/ACL/sshd, nao usuario/senha do app.',
+      );
+    } else if (refused) {
+      details.writeln(
+        'O host respondeu, mas a porta $port recusou a conexao. Verifique se o sshd esta rodando e escutando nessa interface.',
+      );
+    } else if (authLike) {
+      details.writeln(
+        'O app chegou ao SSH, mas a autenticacao falhou. Confira usuario, senha e se login por senha esta habilitado.',
+      );
+    } else {
+      details.writeln(
+        'Confira host, porta, Tailscale, rota de rede e credenciais SSH.',
+      );
+    }
+
+    details.writeln();
+    details.writeln('Erro original:');
+    details.write(rawError);
+    return details.toString();
+  }
+
+  bool _looksLikeTailscaleIp(String host) {
+    final parts = host.split('.');
+    if (parts.length != 4) {
+      return false;
+    }
+    final first = int.tryParse(parts.first);
+    return first == 100;
   }
 }

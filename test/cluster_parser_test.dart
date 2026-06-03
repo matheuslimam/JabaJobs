@@ -13,6 +13,18 @@ void main() {
     expect(jobs.first.jobId, '123');
     expect(jobs.first.partition, 'a4000');
     expect(jobs.first.state, 'RUNNING');
+    expect(jobs.first.isActive, isTrue);
+  });
+
+  test('marks failed Slurm states as monitor errors', () {
+    final parser = ClusterParser();
+
+    final jobs = parser.parseJobs(
+      '124|a4000|train|alice|FAILED|00:12:30|1|gpu-a4000\n',
+    );
+
+    expect(jobs.single.hasErrorState, isTrue);
+    expect(jobs.single.isActive, isFalse);
   });
 
   test('parses free and df summaries without failing on raw text', () {

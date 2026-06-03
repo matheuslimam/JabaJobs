@@ -6,6 +6,7 @@ import '../core/app_exception.dart';
 import '../models/admin_snapshot.dart';
 import '../models/connection_profile.dart';
 import '../models/job_info.dart';
+import '../models/job_monitor_alert.dart';
 import '../models/server_health.dart';
 import '../models/session_info.dart';
 import '../models/submit_context.dart';
@@ -34,13 +35,21 @@ class ClusterAppState extends ChangeNotifier {
   String jobStatus = '';
   String? bannerMessage;
   String? errorMessage;
+  JobMonitorAlert? jobMonitorAlert;
+  DateTime? jobMonitorLastCheckedAt;
   bool isBusy = false;
   bool autoRefresh = false;
   bool followLog = false;
+  bool notifyOnSelectedJobEvent = false;
 
   Timer? _refreshTimer;
   Timer? _logTimer;
+  Timer? _jobMonitorTimer;
   bool _logRefreshInFlight = false;
+  bool _jobMonitorInFlight = false;
+  bool _monitorWasActive = false;
+  String? _monitorJobId;
+  String? _lastMonitorAlertKey;
 
   bool get isConnected => session != null && _repository.isConnected;
   bool get isAdmin => session?.isAdmin ?? false;
@@ -49,12 +58,7 @@ class ClusterAppState extends ChangeNotifier {
     if (id == null) {
       return null;
     }
-    for (final job in myJobs) {
-      if (job.jobId == id) {
-        return job;
-      }
-    }
-    return null;
+    return _findJobById(myJobs, id);
   }
 
   Future<void> connect(ConnectionProfile profile) async {
@@ -95,6 +99,12 @@ class ClusterAppState extends ChangeNotifier {
     selectedJobId = jobId;
     jobLog = '';
     jobStatus = '';
+    jobMonitorAlert = null;
+    _resetJobMonitorBaseline();
+    if (notifyOnSelectedJobEvent) {
+      _startJobMonitorTimer();
+      unawaited(_checkSelectedJobMonitor());
+    }
     notifyListeners();
   }
 
@@ -233,15 +243,48 @@ class ClusterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setNotifyOnSelectedJobEvent(bool value) {
+    if (!value) {
+      notifyOnSelectedJobEvent = false;
+      jobMonitorAlert = null;
+      _jobMonitorTimer?.cancel();
+      _jobMonitorTimer = null;
+      notifyListeners();
+      return;
+    }
+
+    if (selectedJobId == null || selectedJobId!.isEmpty) {
+      errorMessage = 'Selecione um job primeiro.';
+      notifyListeners();
+      return;
+    }
+
+    notifyOnSelectedJobEvent = true;
+    jobMonitorAlert = null;
+    errorMessage = null;
+    _lastMonitorAlertKey = null;
+    _resetJobMonitorBaseline();
+    _startJobMonitorTimer();
+    unawaited(_checkSelectedJobMonitor());
+    notifyListeners();
+  }
+
+  void clearJobMonitorAlert() {
+    jobMonitorAlert = null;
+    notifyListeners();
+  }
+
   void clearMessages() {
     bannerMessage = null;
     errorMessage = null;
+    jobMonitorAlert = null;
     notifyListeners();
   }
 
   void disconnect() {
     _refreshTimer?.cancel();
     _logTimer?.cancel();
+    _jobMonitorTimer?.cancel();
     _repository.disconnect();
     session = null;
     health = null;
@@ -254,9 +297,15 @@ class ClusterAppState extends ChangeNotifier {
     gtx1660SlurmTestOutput = '';
     jobLog = '';
     jobStatus = '';
+    jobMonitorAlert = null;
+    jobMonitorLastCheckedAt = null;
     selectedJobId = null;
     autoRefresh = false;
     followLog = false;
+    notifyOnSelectedJobEvent = false;
+    _monitorWasActive = false;
+    _monitorJobId = null;
+    _lastMonitorAlertKey = null;
     notifyListeners();
   }
 
@@ -306,10 +355,141 @@ class ClusterAppState extends ChangeNotifier {
     }
   }
 
+  void _startJobMonitorTimer() {
+    _jobMonitorTimer?.cancel();
+    _jobMonitorTimer = Timer.periodic(const Duration(seconds: 15), (_) {
+      unawaited(_checkSelectedJobMonitor());
+    });
+  }
+
+  void _resetJobMonitorBaseline() {
+    _monitorJobId = selectedJobId;
+    _monitorWasActive = selectedJob?.isActive ?? false;
+  }
+
+  Future<void> _checkSelectedJobMonitor() async {
+    if (!notifyOnSelectedJobEvent || _jobMonitorInFlight) {
+      return;
+    }
+
+    final current = session;
+    final jobId = selectedJobId;
+    if (current == null || jobId == null || jobId.isEmpty) {
+      return;
+    }
+
+    if (_monitorJobId != jobId) {
+      _resetJobMonitorBaseline();
+      _lastMonitorAlertKey = null;
+    }
+
+    _jobMonitorInFlight = true;
+    try {
+      final jobs = await _repository.getMyJobs(current.remoteUser);
+      myJobs = jobs;
+
+      final currentJob = _findJobById(jobs, jobId);
+      final wasActiveBeforeCheck = _monitorWasActive;
+      final isActiveNow = currentJob?.isActive ?? false;
+
+      final output = await _repository.getJobLog(jobId);
+      if (output.trim().isNotEmpty) {
+        jobLog = output;
+      }
+
+      jobMonitorLastCheckedAt = DateTime.now();
+
+      final logErrorLine = JobMonitorSignals.findErrorLine(jobLog);
+      if (currentJob != null && currentJob.hasErrorState) {
+        _publishJobMonitorAlert(
+          key: 'state-error:$jobId:${currentJob.state}',
+          type: JobMonitorAlertType.error,
+          jobId: jobId,
+          title: 'Job $jobId com erro',
+          message: 'Estado atual: ${currentJob.state}.',
+        );
+      } else if (logErrorLine != null) {
+        _publishJobMonitorAlert(
+          key: 'log-error:$jobId:$logErrorLine',
+          type: JobMonitorAlertType.error,
+          jobId: jobId,
+          title: 'Possivel erro no job $jobId',
+          message: logErrorLine,
+        );
+      } else if (wasActiveBeforeCheck && !isActiveNow) {
+        _publishJobMonitorAlert(
+          key: 'stopped:$jobId:${currentJob?.state ?? 'missing'}',
+          type: JobMonitorAlertType.stopped,
+          jobId: jobId,
+          title: 'Job $jobId parou',
+          message: currentJob == null
+              ? 'O job saiu da fila do Slurm.'
+              : 'Estado atual: ${currentJob.state}.',
+        );
+      }
+
+      _monitorWasActive = isActiveNow;
+      errorMessage = null;
+    } on AppException catch (error) {
+      errorMessage = error.toString();
+      _publishJobMonitorAlert(
+        key: 'monitor-app-error:$jobId:${error.runtimeType}',
+        type: JobMonitorAlertType.error,
+        jobId: jobId,
+        title: 'Falha ao monitorar job $jobId',
+        message: error.toString(),
+      );
+    } catch (error) {
+      errorMessage = 'Algo deu errado ao monitorar o job.\n$error';
+      _publishJobMonitorAlert(
+        key: 'monitor-error:$jobId:${error.runtimeType}',
+        type: JobMonitorAlertType.error,
+        jobId: jobId,
+        title: 'Falha ao monitorar job $jobId',
+        message: '$error',
+      );
+    } finally {
+      _jobMonitorInFlight = false;
+      notifyListeners();
+    }
+  }
+
+  void _publishJobMonitorAlert({
+    required String key,
+    required JobMonitorAlertType type,
+    required String jobId,
+    required String title,
+    required String message,
+  }) {
+    if (_lastMonitorAlertKey == key) {
+      return;
+    }
+    _lastMonitorAlertKey = key;
+    jobMonitorAlert = JobMonitorAlert(
+      id: '${DateTime.now().microsecondsSinceEpoch}:$key',
+      type: type,
+      jobId: jobId,
+      title: title,
+      message: message,
+      createdAt: DateTime.now(),
+    );
+    bannerMessage = message;
+  }
+
+  JobInfo? _findJobById(List<JobInfo> jobs, String jobId) {
+    for (final job in jobs) {
+      if (job.jobId == jobId) {
+        return job;
+      }
+    }
+    return null;
+  }
+
   @override
   void dispose() {
     _refreshTimer?.cancel();
     _logTimer?.cancel();
+    _jobMonitorTimer?.cancel();
     _repository.disconnect();
     super.dispose();
   }

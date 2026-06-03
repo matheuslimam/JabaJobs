@@ -11,6 +11,10 @@ O MVP foi pensado para o cenário:
 
 ## Funcionalidades
 
+- Modo mobile responsivo focado em Monitor/Logs
+- Seletor compacto de jobs em tela estreita
+- Alerta in-app, som do sistema e vibracao quando o job selecionado sai da fila/para de rodar ou quando o log mostra padroes comuns de erro
+
 - Login SSH com host, usuário e senha
 - Persistência opcional apenas de host e usuário
 - Senha mantida apenas em memória
@@ -80,6 +84,37 @@ Comandos:
 ```powershell
 flutter pub get
 flutter run -d windows
+```
+
+Para testar a experiencia mobile sem gerar APK, rode em uma janela estreita ou use um target Android/iOS quando esses targets forem adicionados ao projeto Flutter. No modo mobile, a navegacao mostra apenas:
+
+- `Monitor`: jobs, log, progresso e chave `Notificar parada/erro`
+- `Config`: sessao atual e preferencias basicas
+
+O monitor verifica o job selecionado a cada 15 segundos enquanto o app esta aberto e conectado ao SSH. Ele atualiza `myjobs`, le o log `~/logs/slurm-<jobid>.out` e avisa quando:
+
+- o job estava ativo e deixou de aparecer/rodar na fila Slurm
+- o estado Slurm indica falha/cancelamento/timeout/OOM
+- o log contem sinais como `Traceback`, `Exception`, `CUDA error`, `out of memory`, `failed`, `falha` ou `erro`
+
+Observacao: esta implementacao usa alerta dentro do app, som do sistema e vibracao. Para notificacoes push/background com o app fechado, adicione uma camada nativa como `flutter_local_notifications` + permissao Android/iOS e um servico de background.
+
+### Timeout SSH no Android com IP Tailscale
+
+Se o APK mostrar `SocketException: Connection timed out` para um host `100.x.x.x`, o app nao chegou na porta SSH. Isso normalmente nao e senha errada; e caminho de rede.
+
+No celular:
+
+- Instale e abra o app Tailscale.
+- Entre no mesmo tailnet usado pelo `cluster-login`.
+- Confirme que a VPN do Tailscale esta ativa no Android.
+- Verifique no admin do Tailscale se o dispositivo Android foi autorizado e se as ACLs permitem acesso ao `cluster-login:22`.
+- Teste no proprio Android com Termux ou outro cliente SSH: `ssh usuario@100.104.26.64`. Se tambem der timeout, o problema esta no Tailscale/rota/ACL/sshd, nao no app.
+
+No `cluster-login`, confirme que o SSH esta escutando:
+
+```bash
+sudo ss -lntp | grep ':22'
 ```
 
 Na tela inicial, informe:
