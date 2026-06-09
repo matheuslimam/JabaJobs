@@ -37,7 +37,7 @@ class JabaJobsApp extends StatelessWidget {
         return MaterialApp(
           title: 'JABA JOBS',
           debugShowCheckedModeBanner: false,
-          theme: buildClusterGlassTheme(),
+          theme: buildJabaJobsTheme(),
           home: state.isConnected
               ? AppShell(state: state)
               : LoginPage(state: state),

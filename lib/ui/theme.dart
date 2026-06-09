@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-ThemeData buildClusterGlassTheme() {
+ThemeData buildJabaJobsTheme() {
   const background = Color(0xFF0D1117);
   const surface = Color(0xFF151B23);
   const elevated = Color(0xFF1F2937);

@@ -1,4 +1,4 @@
-import 'package:cluster_glass/models/job_monitor_alert.dart';
+import 'package:jaba_jobs/models/job_monitor_alert.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

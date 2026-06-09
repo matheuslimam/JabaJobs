@@ -1,4 +1,4 @@
-package com.example.cluster_glass
+package com.jabajobs.app
 
 import io.flutter.embedding.android.FlutterActivity
 

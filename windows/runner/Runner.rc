@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "cluster_glass" "\0"
+            VALUE "CompanyName", "JABA JOBS" "\0"
+            VALUE "FileDescription", "JABA JOBS" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "cluster_glass" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "cluster_glass.exe" "\0"
-            VALUE "ProductName", "cluster_glass" "\0"
+            VALUE "InternalName", "jaba_jobs" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 JABA JOBS. All rights reserved." "\0"
+            VALUE "OriginalFilename", "jaba_jobs.exe" "\0"
+            VALUE "ProductName", "JABA JOBS" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

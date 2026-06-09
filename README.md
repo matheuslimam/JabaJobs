@@ -132,7 +132,7 @@ flutter build windows --release
 O executável fica em:
 
 ```text
-build\windows\x64\runner\Release\cluster_glass.exe
+build\windows\x64\runner\Release\jaba_jobs.exe
 ```
 
 Para distribuir, envie a pasta `Release` inteira, não apenas o `.exe`, porque ela contém DLLs e assets necessários do Flutter.

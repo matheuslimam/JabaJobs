@@ -1,4 +1,4 @@
-import 'package:cluster_glass/services/cluster_parser.dart';
+import 'package:jaba_jobs/services/cluster_parser.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

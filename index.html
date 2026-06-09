@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Baixe o JABA JOBS para Windows e Android. Dashboard simples para acompanhar jobs, logs e submiss&otilde;es no cluster via Tailscale e SSH."
+    />
+    <title>JABA JOBS | Downloads</title>
+    <style>
+      :root {
+        --ink: #101418;
+        --muted: #53616d;
+        --paper: #f7f9f7;
+        --surface: #ffffff;
+        --night: #091015;
+        --night-soft: #111b21;
+        --line: #d9e3dd;
+        --green: #00b879;
+        --mint: #c7f4d4;
+        --gold: #f4b63f;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .site-header {
+        position: fixed;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 14px clamp(18px, 4vw, 54px);
+        color: #eefbf4;
+        background: rgba(9, 16, 21, 0.82);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(14px);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+        text-decoration: none;
+      }
+
+      .brand img {
+        width: 38px;
+        height: 38px;
+        object-fit: contain;
+      }
+
+      .brand strong {
+        font-size: 1rem;
+        letter-spacing: 0;
+        white-space: nowrap;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.92rem;
+      }
+
+      .nav-links a {
+        padding: 8px 10px;
+        color: rgba(238, 251, 244, 0.82);
+        text-decoration: none;
+        border-radius: 8px;
+      }
+
+      .nav-links a:hover {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .hero {
+        position: relative;
+        min-height: 92vh;
+        display: grid;
+        align-items: center;
+        overflow: hidden;
+        padding: 112px clamp(20px, 6vw, 86px) 72px;
+        color: #f6fff9;
+        background: var(--night);
+      }
+
+      .hero::before {
+        position: absolute;
+        inset: 0;
+        content: "";
+        background-image: url("jenasolo.png");
+        background-repeat: no-repeat;
+        background-size: min(720px, 72vw) auto;
+        background-position: right clamp(-140px, -8vw, -30px) bottom 10%;
+        opacity: 0.44;
+        filter: saturate(1.08);
+      }
+
+      .hero::after {
+        position: absolute;
+        inset: 0;
+        content: "";
+        background: rgba(9, 16, 21, 0.36);
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 720px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 16px;
+        color: var(--mint);
+        font-size: 0.86rem;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        width: 10px;
+        height: 10px;
+        content: "";
+        background: var(--green);
+        border-radius: 999px;
+        box-shadow: 0 0 0 6px rgba(0, 184, 121, 0.16);
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        margin-bottom: 18px;
+        font-size: clamp(3.1rem, 8vw, 7rem);
+        line-height: 0.9;
+        letter-spacing: 0;
+      }
+
+      .hero-copy {
+        max-width: 600px;
+        margin-bottom: 26px;
+        color: rgba(246, 255, 249, 0.82);
+        font-size: clamp(1rem, 2vw, 1.2rem);
+      }
+
+      .hero-actions,
+      .download-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 13px 18px;
+        gap: 10px;
+        color: #07100d;
+        background: var(--green);
+        border: 1px solid transparent;
+        border-radius: 8px;
+        font-weight: 850;
+        text-decoration: none;
+        box-shadow: 0 14px 28px rgba(0, 184, 121, 0.22);
+        transition:
+          transform 0.18s ease,
+          box-shadow 0.18s ease,
+          background 0.18s ease;
+      }
+
+      .button:hover {
+        transform: translateY(-2px);
+        background: #19d892;
+        box-shadow: 0 18px 34px rgba(0, 184, 121, 0.3);
+      }
+
+      .button.secondary {
+        color: #f7fff9;
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.18);
+        box-shadow: none;
+      }
+
+      .button.secondary:hover {
+        background: rgba(255, 255, 255, 0.14);
+      }
+
+      .button svg {
+        width: 20px;
+        height: 20px;
+        flex: 0 0 auto;
+      }
+
+      .hero-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 30px;
+      }
+
+      .pill {
+        padding: 8px 11px;
+        color: rgba(246, 255, 249, 0.86);
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        font-size: 0.9rem;
+        font-weight: 700;
+      }
+
+      main {
+        position: relative;
+      }
+
+      section {
+        padding: 72px clamp(20px, 6vw, 86px);
+      }
+
+      .section-inner {
+        width: min(1120px, 100%);
+        margin: 0 auto;
+      }
+
+      .section-title {
+        max-width: 760px;
+        margin-bottom: 30px;
+      }
+
+      h2 {
+        margin-bottom: 10px;
+        font-size: clamp(2rem, 4vw, 3.2rem);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .section-title p {
+        color: var(--muted);
+        font-size: 1.04rem;
+      }
+
+      .downloads {
+        background: #ffffff;
+      }
+
+      .download-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .download-card,
+      .info-card,
+      .change-item {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: 0 8px 26px rgba(16, 20, 24, 0.06);
+      }
+
+      .download-card {
+        display: flex;
+        flex-direction: column;
+        min-height: 280px;
+        padding: 24px;
+      }
+
+      .platform-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+
+      .platform-icon {
+        display: grid;
+        place-items: center;
+        width: 48px;
+        height: 48px;
+        color: var(--night);
+        background: #e6fbec;
+        border: 1px solid #c4efd0;
+        border-radius: 8px;
+      }
+
+      .platform-icon.android {
+        background: #fff4d8;
+        border-color: #f2d992;
+      }
+
+      .platform-icon svg {
+        width: 26px;
+        height: 26px;
+      }
+
+      .download-card h3 {
+        margin-bottom: 8px;
+        font-size: 1.45rem;
+      }
+
+      .download-card p {
+        color: var(--muted);
+      }
+
+      .download-card .download-actions {
+        margin-top: auto;
+      }
+
+      .download-card .button.secondary {
+        color: var(--ink);
+        background: #eef4ef;
+        border-color: #d8e4dc;
+      }
+
+      .download-card .button.secondary:hover {
+        background: #e0ebe3;
+      }
+
+      .meta-list {
+        display: grid;
+        gap: 8px;
+        margin: 18px 0 22px;
+        padding: 0;
+        color: var(--muted);
+        list-style: none;
+      }
+
+      .meta-list li {
+        display: flex;
+        gap: 8px;
+      }
+
+      .meta-list li::before {
+        width: 7px;
+        height: 7px;
+        margin-top: 9px;
+        content: "";
+        background: var(--green);
+        border-radius: 999px;
+        flex: 0 0 auto;
+      }
+
+      .requirements {
+        background: #edf5f0;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .info-card {
+        padding: 22px;
+      }
+
+      .info-card h3 {
+        margin-bottom: 10px;
+        font-size: 1.12rem;
+      }
+
+      .info-card ul {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+      }
+
+      .release {
+        background: var(--night);
+        color: #f5fff8;
+      }
+
+      .release .section-title p {
+        color: rgba(245, 255, 248, 0.72);
+      }
+
+      .release-grid {
+        display: grid;
+        grid-template-columns: 0.85fr 1.15fr;
+        gap: 20px;
+        align-items: stretch;
+      }
+
+      .release-panel {
+        padding: 26px;
+        background: var(--night-soft);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+      }
+
+      .version-number {
+        margin-bottom: 8px;
+        color: var(--mint);
+        font-size: clamp(2.4rem, 7vw, 5rem);
+        font-weight: 900;
+        line-height: 0.92;
+      }
+
+      .release-panel p {
+        color: rgba(245, 255, 248, 0.74);
+      }
+
+      .change-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .change-item {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 14px;
+        padding: 18px;
+        color: var(--ink);
+      }
+
+      .change-badge {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        color: #06100c;
+        background: var(--gold);
+        border-radius: 8px;
+        font-weight: 900;
+      }
+
+      .change-item h3 {
+        margin-bottom: 4px;
+        font-size: 1rem;
+      }
+
+      .change-item p {
+        margin-bottom: 0;
+        color: var(--muted);
+      }
+
+      .install {
+        background: #ffffff;
+      }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        counter-reset: steps;
+      }
+
+      .step {
+        min-height: 160px;
+        padding: 20px;
+        background: #f7faf8;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        counter-increment: steps;
+      }
+
+      .step::before {
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        margin-bottom: 18px;
+        color: #06100c;
+        content: counter(steps);
+        background: var(--green);
+        border-radius: 8px;
+        font-weight: 900;
+      }
+
+      .step h3 {
+        margin-bottom: 8px;
+        font-size: 1rem;
+      }
+
+      .step p {
+        margin-bottom: 0;
+        color: var(--muted);
+      }
+
+      .site-footer {
+        padding: 34px clamp(20px, 6vw, 86px);
+        color: rgba(245, 255, 248, 0.7);
+        background: #070c10;
+      }
+
+      .footer-inner {
+        width: min(1120px, 100%);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin: 0 auto;
+      }
+
+      .footer-inner a {
+        color: #bff5d0;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      @media (max-width: 880px) {
+        .site-header {
+          position: absolute;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .hero {
+          min-height: auto;
+          padding-top: 104px;
+          padding-bottom: 92px;
+        }
+
+        .hero::before {
+          background-size: 520px auto;
+          background-position: right -190px bottom 20px;
+          opacity: 0.32;
+        }
+
+        .download-grid,
+        .info-grid,
+        .release-grid,
+        .steps {
+          grid-template-columns: 1fr;
+        }
+
+        .footer-inner {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .brand strong {
+          font-size: 0.94rem;
+        }
+
+        section {
+          padding-top: 56px;
+          padding-bottom: 56px;
+        }
+
+        .hero-actions .button,
+        .download-actions .button {
+          width: 100%;
+        }
+
+        .download-card,
+        .info-card,
+        .release-panel,
+        .change-item,
+        .step {
+          padding: 18px;
+        }
+
+        .change-item {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="JABA JOBS">
+        <img src="jenasolo.png" alt="" />
+        <strong>JABA JOBS</strong>
+      </a>
+      <nav class="nav-links" aria-label="Navega&ccedil;&atilde;o principal">
+        <a href="#downloads">Downloads</a>
+        <a href="#requisitos">Requisitos</a>
+        <a href="#changelog">Changelog</a>
+      </nav>
+    </header>
+
+    <section class="hero" id="top">
+      <div class="hero-content">
+        <p class="eyebrow">Cluster via Tailscale + SSH</p>
+        <h1>JABA JOBS</h1>
+        <p class="hero-copy">
+          Baixe a ferramenta para monitorar jobs, acompanhar logs, receber
+          alertas de parada ou erro e submeter experimentos para as filas do
+          cluster sem decorar comandos longos.
+        </p>
+        <div class="hero-actions" aria-label="Downloads principais">
+          <a
+            class="button"
+            href="https://github.com/matheuslimam/Lince_cluster_app/releases/download/v1.0.0/JABA-JOBS-Windows-v1.0.0.zip"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M3 4.8 10.6 3.8v7.5H3V4.8Zm9.4-1.2L21 2.4v8.9h-8.6V3.6ZM3 12.7h7.6v7.5L3 19.2v-6.5Zm9.4 0H21v8.9l-8.6-1.2v-7.7Z"
+              />
+            </svg>
+            Baixar Windows
+          </a>
+          <a
+            class="button secondary"
+            href="https://github.com/matheuslimam/Lince_cluster_app/releases/download/v1.0.0/JABA-JOBS-Android-v1.0.0.apk"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M7.2 8.1h9.6v8.3c0 .9-.7 1.6-1.6 1.6h-.6v2.2c0 .5-.4.8-.8.8s-.8-.3-.8-.8V18h-2v2.2c0 .5-.4.8-.8.8s-.8-.3-.8-.8V18h-.6c-.9 0-1.6-.7-1.6-1.6V8.1Zm-2.7.4c.5 0 .9.4.9.9v5c0 .5-.4.9-.9.9s-.9-.4-.9-.9v-5c0-.5.4-.9.9-.9Zm15 0c.5 0 .9.4.9.9v5c0 .5-.4.9-.9.9s-.9-.4-.9-.9v-5c0-.5.4-.9.9-.9ZM8.4 4.2 7.3 2.7l.8-.5 1.2 1.6c.8-.3 1.7-.5 2.7-.5s1.9.2 2.7.5l1.2-1.6.8.5-1.1 1.5c1.1.7 1.8 1.7 2 2.9H6.4c.2-1.2.9-2.2 2-2.9Zm1.1 1.6c.3 0 .6-.3.6-.6s-.3-.6-.6-.6-.6.3-.6.6.3.6.6.6Zm5 0c.3 0 .6-.3.6-.6s-.3-.6-.6-.6-.6.3-.6.6.3.6.6.6Z"
+              />
+            </svg>
+            Baixar Android
+          </a>
+        </div>
+        <div class="hero-meta" aria-label="Resumo da vers&atilde;o">
+          <span class="pill">Vers&atilde;o v1.0.0</span>
+          <span class="pill">Build 1</span>
+          <span class="pill">Atualizado em 09/06/2026</span>
+        </div>
+      </div>
+    </section>
+
+    <main>
+      <section class="downloads" id="downloads">
+        <div class="section-inner">
+          <div class="section-title">
+            <h2>Downloads</h2>
+            <p>
+              Escolha a vers&atilde;o para seu dispositivo. No Windows,
+              distribua o ZIP inteiro; no Android, instale o APK com o
+              Tailscale ativo.
+            </p>
+          </div>
+
+          <div class="download-grid">
+            <article class="download-card">
+              <div class="platform-row">
+                <div>
+                  <h3>Windows</h3>
+                  <p>Aplicativo desktop para Windows 10/11 64-bit.</p>
+                </div>
+                <div class="platform-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      fill="currentColor"
+                      d="M3 4.8 10.6 3.8v7.5H3V4.8Zm9.4-1.2L21 2.4v8.9h-8.6V3.6ZM3 12.7h7.6v7.5L3 19.2v-6.5Zm9.4 0H21v8.9l-8.6-1.2v-7.7Z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <ul class="meta-list">
+                <li>Arquivo: JABA-JOBS-Windows-v1.0.0.zip</li>
+                <li>Inclui o execut&aacute;vel jaba_jobs.exe e depend&ecirc;ncias Flutter.</li>
+                <li>Extraia a pasta antes de abrir o app.</li>
+              </ul>
+              <div class="download-actions">
+                <a
+                  class="button"
+                  href="https://github.com/matheuslimam/Lince_cluster_app/releases/download/v1.0.0/JABA-JOBS-Windows-v1.0.0.zip"
+                  >Baixar ZIP</a
+                >
+                <a
+                  class="button secondary"
+                  href="https://github.com/matheuslimam/Lince_cluster_app/releases"
+                  >Ver releases</a
+                >
+              </div>
+            </article>
+
+            <article class="download-card">
+              <div class="platform-row">
+                <div>
+                  <h3>Android</h3>
+                  <p>APK para monitorar jobs e logs pelo celular.</p>
+                </div>
+                <div class="platform-icon android" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      fill="currentColor"
+                      d="M7.2 8.1h9.6v8.3c0 .9-.7 1.6-1.6 1.6h-.6v2.2c0 .5-.4.8-.8.8s-.8-.3-.8-.8V18h-2v2.2c0 .5-.4.8-.8.8s-.8-.3-.8-.8V18h-.6c-.9 0-1.6-.7-1.6-1.6V8.1Zm-2.7.4c.5 0 .9.4.9.9v5c0 .5-.4.9-.9.9s-.9-.4-.9-.9v-5c0-.5.4-.9.9-.9Zm15 0c.5 0 .9.4.9.9v5c0 .5-.4.9-.9.9s-.9-.4-.9-.9v-5c0-.5.4-.9.9-.9ZM8.4 4.2 7.3 2.7l.8-.5 1.2 1.6c.8-.3 1.7-.5 2.7-.5s1.9.2 2.7.5l1.2-1.6.8.5-1.1 1.5c1.1.7 1.8 1.7 2 2.9H6.4c.2-1.2.9-2.2 2-2.9Z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <ul class="meta-list">
+                <li>Arquivo: JABA-JOBS-Android-v1.0.0.apk</li>
+                <li>Requer permiss&atilde;o para instalar APK fora da Play Store.</li>
+                <li>Use o Tailscale conectado antes de abrir o app.</li>
+              </ul>
+              <div class="download-actions">
+                <a
+                  class="button"
+                  href="https://github.com/matheuslimam/Lince_cluster_app/releases/download/v1.0.0/JABA-JOBS-Android-v1.0.0.apk"
+                  >Baixar APK</a
+                >
+                <a
+                  class="button secondary"
+                  href="https://github.com/matheuslimam/Lince_cluster_app/releases"
+                  >Ver releases</a
+                >
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="requirements" id="requisitos">
+        <div class="section-inner">
+          <div class="section-title">
+            <h2>Requisitos</h2>
+            <p>
+              O app n&atilde;o substitui o acesso ao cluster; ele usa sua conta
+              SSH e a rede privada Tailscale para conectar no login node.
+            </p>
+          </div>
+
+          <div class="info-grid">
+            <article class="info-card">
+              <h3>Acesso</h3>
+              <ul>
+                <li>Conta Linux no cluster</li>
+                <li>Senha SSH ativa</li>
+                <li>IP ou nome Tailscale do cluster-login</li>
+              </ul>
+            </article>
+
+            <article class="info-card">
+              <h3>Rede</h3>
+              <ul>
+                <li>Tailscale instalado</li>
+                <li>Dispositivo autorizado na tailnet</li>
+                <li>ACL liberando acesso ao SSH na porta 22</li>
+              </ul>
+            </article>
+
+            <article class="info-card">
+              <h3>Cluster</h3>
+              <ul>
+                <li>Wrappers run-a4000 e run-1660</li>
+                <li>Helpers myjobs, joblog e watchjob</li>
+                <li>Logs salvos em ~/logs</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="release" id="changelog">
+        <div class="section-inner">
+          <div class="section-title">
+            <h2>Vers&atilde;o atual</h2>
+            <p>
+              Esta &eacute; a primeira vers&atilde;o empacotada para
+              distribui&ccedil;&atilde;o interna do JABA JOBS.
+            </p>
+          </div>
+
+          <div class="release-grid">
+            <aside class="release-panel">
+              <div class="version-number">v1.0.0</div>
+              <p>Build 1</p>
+              <p>Data de publica&ccedil;&atilde;o: 09/06/2026</p>
+              <p>
+                Plataformas: Windows desktop e Android APK para uso com
+                Tailscale.
+              </p>
+            </aside>
+
+            <div class="change-list" aria-label="Changelog">
+              <article class="change-item">
+                <div class="change-badge">1</div>
+                <div>
+                  <h3>Monitoramento de jobs</h3>
+                  <p>
+                    Dashboard com status do cluster, listagem de jobs do
+                    usu&aacute;rio e acompanhamento de logs.
+                  </p>
+                </div>
+              </article>
+
+              <article class="change-item">
+                <div class="change-badge">2</div>
+                <div>
+                  <h3>Alertas de parada e erro</h3>
+                  <p>
+                    Notifica&ccedil;&otilde;es dentro do app quando um job
+                    para de rodar ou quando o log mostra falhas comuns.
+                  </p>
+                </div>
+              </article>
+
+              <article class="change-item">
+                <div class="change-badge">3</div>
+                <div>
+                  <h3>Submiss&atilde;o simplificada</h3>
+                  <p>
+                    Envio de comandos para as filas a4000 e gtx1660 com
+                    diret&oacute;rio remoto e ambiente Conda opcional.
+                  </p>
+                </div>
+              </article>
+
+              <article class="change-item">
+                <div class="change-badge">4</div>
+                <div>
+                  <h3>Modo administrador</h3>
+                  <p>
+                    Painel para diagn&oacute;sticos, consulta de Slurm/GPU e
+                    cria&ccedil;&atilde;o de usu&aacute;rios via clusterctl
+                    quando dispon&iacute;vel.
+                  </p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="install" id="instalacao">
+        <div class="section-inner">
+          <div class="section-title">
+            <h2>Como instalar</h2>
+            <p>
+              Quatro passos para sair do download at&eacute; a primeira
+              conex&atilde;o com o cluster.
+            </p>
+          </div>
+
+          <div class="steps">
+            <article class="step">
+              <h3>Baixe</h3>
+              <p>Escolha Windows ou Android nos bot&otilde;es acima.</p>
+            </article>
+            <article class="step">
+              <h3>Prepare a rede</h3>
+              <p>Abra o Tailscale e confirme que o dispositivo est&aacute; conectado.</p>
+            </article>
+            <article class="step">
+              <h3>Abra o app</h3>
+              <p>No Windows, extraia o ZIP inteiro antes de abrir jaba_jobs.exe.</p>
+            </article>
+            <article class="step">
+              <h3>Conecte</h3>
+              <p>Informe host, usu&aacute;rio e senha SSH do cluster-login.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <span>JABA JOBS &middot; Cluster via Tailscale + SSH</span>
+        <a href="https://github.com/matheuslimam/Lince_cluster_app">GitHub</a>
+      </div>
+    </footer>
+  </body>
+</html>
