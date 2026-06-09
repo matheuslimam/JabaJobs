@@ -17,12 +17,38 @@
 </p>
 
 <p align="center">
-  <a href="https://matheuslimam.github.io/Lince_cluster_app/"><strong>Pagina de download</strong></a>
+  <a href="https://matheuslimam.github.io/JabaJobs/"><strong>Pagina de download</strong></a>
   |
   <a href="jabajobs.md"><strong>Guia de uso</strong></a>
   |
-  <a href="https://github.com/matheuslimam/Lince_cluster_app/releases"><strong>Releases</strong></a>
+  <a href="https://github.com/matheuslimam/JabaJobs/releases"><strong>Releases</strong></a>
 </p>
+
+
+## Video tutorial
+
+<p align="center">
+  <a href="https://youtu.be/OylJXqLOGds">
+    <img
+      src="https://img.youtube.com/vi/OylJXqLOGds/maxresdefault.jpg"
+      alt="Video tutorial do Cluster LINCE"
+      width="720"
+    />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://youtu.be/OylJXqLOGds">
+    <strong>▶ Assistir ao vídeo tutorial</strong>
+  </a>
+</p>
+
+<p align="center">
+  Aprenda a acessar o Cluster LINCE, configurar seu ambiente,
+  executar experimentos e acompanhar seus jobs.
+</p>
+
+
 
 ---
 
