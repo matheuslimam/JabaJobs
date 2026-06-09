@@ -164,7 +164,7 @@ Testes recomendados:
 ```bash
 sudo -n /usr/local/sbin/clusterctl health
 sudo -n /usr/local/sbin/clusterctl gpu-info a4000
-sudo -n /usr/local/sbin/clusterctl create-user teste_app lince2
+sudo -n /usr/local/sbin/clusterctl create-user teste_app <admin_remoto>
 ```
 
 ## Desenvolvimento
