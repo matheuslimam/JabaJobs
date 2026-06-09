@@ -38,7 +38,7 @@ O MVP foi desenhado para este ambiente:
 - `gpu-a4000`: no de treino principal e particao `a4000`;
 - wrappers remotos: `run-a4000`, `run-1660`, `myjobs`, `canceljob`, `joblog`, `watchjob`;
 - logs em `~/logs/slurm-<jobid>.out`;
-- acesso de rede por VPN UNESP ou Tailscale, conforme a configuracao do laboratorio.
+- acesso de rede pela VPN UNESP.
 
 ## Downloads
 
@@ -65,14 +65,14 @@ No Windows, extraia o ZIP inteiro antes de abrir `jaba_jobs.exe`. O executavel d
 - Submissao com diretorio remoto, Conda opcional e wrappers `run-a4000` / `run-1660`.
 - Modo mobile responsivo com foco em `Monitor` e `Config`.
 - Aba administrativa para usuarios autorizados.
-- Diagnosticos administrativos de Slurm, GPU, Tailscale, Conda, MUNGE, NFS e logs systemd.
+- Diagnosticos administrativos de Slurm, GPU, Conda, MUNGE, NFS e logs systemd.
 - Criacao de usuarios via helper seguro `clusterctl`, quando configurado.
 
 ## Requisitos para usar
 
 Para usar o app, o usuario precisa de:
 
-- VPN UNESP ou Tailscale configurado;
+- VPN UNESP configurada;
 - conta Linux no cluster;
 - senha SSH;
 - IP ou nome do `cluster-login`;
@@ -277,8 +277,6 @@ sinfo -h -o "%P|%a|%l|%D|%t|%N"
 sinfo -N -h -o "%N|%T|%P|%c|%m|%G"
 nvidia-smi
 scontrol show nodes
-tailscale ip
-tailscale status
 journalctl -u slurmctld -n 80 --no-pager
 journalctl -u slurmd -n 80 --no-pager
 journalctl -u munge -n 80 --no-pager

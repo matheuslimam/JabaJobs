@@ -20,7 +20,7 @@ Arquivos de download:
 
 Voce precisa ter:
 
-- VPN UNESP ou Tailscale configurado, conforme orientacao do administrador do cluster;
+- VPN UNESP configurada, conforme orientacao do administrador do cluster;
 - usuario Linux do cluster;
 - senha SSH;
 - IP ou nome do `cluster-login`;
@@ -43,7 +43,7 @@ Se o Windows SmartScreen mostrar um aviso, confirme que o arquivo foi baixado da
 
 1. Baixe `JABA-JOBS-Android-v1.0.0.apk`.
 2. Se o Android pedir, permita a instalacao de apps de fonte externa.
-3. Abra a VPN UNESP ou o Tailscale e confirme que a conexao esta ativa.
+3. Abra a VPN UNESP e confirme que a conexao esta ativa.
 4. Abra o JABA JOBS.
 5. Informe host, usuario e senha SSH.
 
@@ -221,7 +221,7 @@ Novidades:
 
 Requisitos da versao:
 
-- VPN UNESP ou Tailscale configurado.
+- VPN UNESP configurada.
 - Conta SSH no cluster.
 - Host ou IP do `cluster-login`.
 - Wrappers do cluster configurados: `run-a4000`, `run-1660`, `myjobs`, `joblog`, `watchjob` e `canceljob`.
