@@ -1,0 +1,20 @@
+{
+  "overall": "unknown",
+  "checkedAt": null,
+  "uptimePercent": null,
+  "services": [
+    {
+      "name": "Login SSH",
+      "status": "unknown"
+    },
+    {
+      "name": "Slurm",
+      "status": "unknown"
+    },
+    {
+      "name": "Capacidade de computacao",
+      "status": "unknown"
+    }
+  ],
+  "history": []
+}
