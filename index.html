@@ -1308,7 +1308,7 @@
             : "Sem historico publicado";
       }
 
-      fetch("http://186.217.146.60/status.json", { cache: "no-store" })
+      fetch("https://cluster-login.tail91b3e7.ts.net/status.json", { cache: "no-store" })
         .then((response) => {
           if (!response.ok) {
             throw new Error("status.json not available");
