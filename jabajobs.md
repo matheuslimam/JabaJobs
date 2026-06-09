@@ -1,35 +1,68 @@
-# JABA JOBS - guia de uso e distribuicao
+# JABA JOBS - guia de uso
 
-Este guia explica como usar o JABA JOBS e como disponibilizar o app para outras pessoas em Windows (`.exe`) e Android (`.apk`).
+Este guia explica como baixar, instalar e usar o JABA JOBS.
 
-O JABA JOBS e uma interface Flutter para acompanhar e submeter jobs no cluster por SSH, usando o acesso oficial por Tailscale. Ele ajuda usuarios a ver jobs, ler logs, receber alertas de parada/erro e enviar comandos para as filas `a4000` e `gtx1660`.
+O JABA JOBS e uma ferramenta para acessar o cluster por SSH, acompanhar jobs, visualizar logs, receber alertas de parada ou erro e submeter experimentos para as filas disponiveis.
 
-## 1. Antes de usar
+## 1. Versao atual
+
+- Versao: `v1.0.0`
+- Build: `1`
+- Data de publicacao: `09/06/2026`
+- Plataformas: Windows e Android
+
+Arquivos de download:
+
+- Windows: `JABA-JOBS-Windows-v1.0.0.zip`
+- Android: `JABA-JOBS-Android-v1.0.0.apk`
+
+## 2. Antes de usar
 
 Voce precisa ter:
 
-- VPN UNESP configurado
+- VPN UNESP ou Tailscale configurado, conforme orientacao do administrador do cluster;
 - usuario Linux do cluster;
 - senha SSH;
-- IP ou nome Tailscale do `cluster-login`, por exemplo `100.x.y.z`;
+- IP ou nome do `cluster-login`;
 - app JABA JOBS instalado ou extraido.
 
 Importante: a senha SSH nao e salva em disco pelo app. Se voce marcar a opcao de lembrar dados, apenas host e usuario ficam salvos.
 
-## 2. Primeiro acesso
+## 3. Instalacao no Windows
 
-1. Abra o vpn e confirme que ele esta conectado.
+1. Baixe `JABA-JOBS-Windows-v1.0.0.zip`.
+2. Extraia o ZIP inteiro em uma pasta do seu computador.
+3. Abra `jaba_jobs.exe`.
+4. Informe host, usuario e senha SSH.
+
+No Windows, nao execute apenas o `.exe` isolado. O app precisa das DLLs, assets e arquivos que ficam junto dele dentro da pasta extraida.
+
+Se o Windows SmartScreen mostrar um aviso, confirme que o arquivo foi baixado da pagina oficial do projeto antes de executar.
+
+## 4. Instalacao no Android
+
+1. Baixe `JABA-JOBS-Android-v1.0.0.apk`.
+2. Se o Android pedir, permita a instalacao de apps de fonte externa.
+3. Abra a VPN UNESP ou o Tailscale e confirme que a conexao esta ativa.
+4. Abra o JABA JOBS.
+5. Informe host, usuario e senha SSH.
+
+Se o app nao conectar, teste primeiro se o celular consegue acessar o cluster pela mesma VPN/rede indicada pelo administrador.
+
+## 5. Primeiro acesso
+
+1. Abra a VPN indicada para acesso ao cluster e confirme que ela esta conectada.
 2. Abra o JABA JOBS.
 3. Na tela de login, preencha:
-   - `Host`: IP ou nome Tailscale do `cluster-login`;
+   - `Host`: IP ou nome do `cluster-login`;
    - `Usuario`: seu usuario Linux do cluster;
    - `Senha`: sua senha SSH.
 4. Marque `Lembrar host e usuario` somente se estiver usando um dispositivo confiavel.
 5. Clique em `Conectar`.
 
-Se a conexao falhar com timeout em um IP `100.x.x.x`, normalmente o celular ou computador nao esta chegando ao SSH pelo Tailscale. Confira se a VPN do Tailscale esta ativa, se o dispositivo foi autorizado na tailnet e se as ACLs permitem acesso ao `cluster-login:22`.
+Se a conexao falhar com timeout, normalmente o app nao conseguiu chegar na porta SSH do cluster. Confira a VPN, o host informado e se seu usuario esta autorizado.
 
-## 3. Telas principais no Windows
+## 6. Telas principais no Windows
 
 ### Dashboard
 
@@ -109,7 +142,7 @@ Ela serve para:
 - rodar diagnosticos;
 - criar usuario via `clusterctl`, se o helper estiver instalado.
 
-## 4. Uso no Android
+## 7. Uso no Android
 
 No celular, a interface fica mais compacta e mostra principalmente:
 
@@ -118,14 +151,14 @@ No celular, a interface fica mais compacta e mostra principalmente:
 
 Antes de abrir o app no Android:
 
-1. Instale o Tailscale no celular.
-2. Entre na mesma tailnet do cluster.
-3. Confirme que a VPN do Tailscale esta ativa.
-4. Abra o JABA JOBS e conecte usando o IP ou nome Tailscale do `cluster-login`.
+1. Conecte na VPN indicada para o cluster.
+2. Confirme que o celular esta autorizado a acessar o `cluster-login`.
+3. Abra o JABA JOBS.
+4. Conecte usando o IP ou nome do `cluster-login`.
 
-Se der timeout, teste o SSH no proprio Android com Termux ou outro cliente SSH. Se o SSH tambem falhar, o problema esta na rota Tailscale, autorizacao do dispositivo, ACL ou SSH do servidor.
+Se der timeout, teste o SSH no proprio Android com Termux ou outro cliente SSH. Se o SSH tambem falhar, o problema esta na VPN, rota, autorizacao do dispositivo ou SSH do servidor.
 
-## 5. Boas praticas para usuarios
+## 8. Boas praticas para usuarios
 
 - Nao rode treino pesado diretamente no terminal do `cluster-login`.
 - Use `run-a4000`, `run-1660` ou a tela `Submit` do app.
@@ -138,17 +171,17 @@ Se der timeout, teste o SSH no proprio Android com Termux ou outro cliente SSH. 
 - Cancele jobs que voce sabe que nao precisa mais.
 - Nunca compartilhe sua senha SSH.
 
-## 6. Problemas comuns
+## 9. Problemas comuns
 
 ### Nao conecta
 
 Confira:
 
-- Tailscale esta aberto e conectado?
-- O host informado e o IP ou nome Tailscale correto?
+- A VPN esta aberta e conectada?
+- O host informado e o IP ou nome correto do `cluster-login`?
 - O usuario e a senha estao corretos?
-- O dispositivo foi autorizado na tailnet?
-- O SSH do `cluster-login` esta escutando na porta 22?
+- O dispositivo esta autorizado a acessar a rede do cluster?
+- O SSH do `cluster-login` esta disponivel?
 
 ### Senha incorreta
 
@@ -170,134 +203,25 @@ Os wrappers do cluster nao estao instalados ou nao estao no `PATH`. Avise o admi
 
 Confira se o ambiente existe no cluster e se o nome foi digitado corretamente.
 
-## 7. Como gerar o EXE para Windows
+## 10. Changelog
 
-Na raiz do projeto, rode:
+### JABA JOBS v1.0.0
 
-```powershell
-flutter pub get
-flutter build windows --release
-```
+Primeira versao publica do JABA JOBS para Windows e Android.
 
-O build final fica em:
+Novidades:
 
-```text
-build\windows\x64\runner\Release\
-```
+- Dashboard com estado da conexao, memoria, disco, carga e jobs.
+- Listagem de jobs do usuario.
+- Visualizacao de logs por `joblog` e `watchjob`.
+- Alertas quando um job para ou quando o log mostra erros comuns.
+- Submissao de jobs para `a4000` e `gtx1660`.
+- Interface mobile com foco em monitoramento e logs.
+- Aba administrativa para usuarios autorizados.
 
-O executavel principal e:
+Requisitos da versao:
 
-```text
-build\windows\x64\runner\Release\jaba_jobs.exe
-```
-
-Para distribuir no Windows, envie a pasta `Release` inteira compactada em `.zip`. Nao envie apenas o `.exe`, porque o app Flutter precisa das DLLs, assets e da pasta `data`.
-
-Sugestao de nome:
-
-```text
-JABA-JOBS-Windows-v1.0.0.zip
-```
-
-Antes de publicar, teste o `.zip` em uma maquina Windows limpa:
-
-1. extraia o `.zip`;
-2. abra `jaba_jobs.exe`;
-3. conecte no Tailscale;
-4. faca login no cluster;
-5. teste Dashboard, Jobs, Logs e Submit.
-
-Observacao: sem assinatura de codigo, o Windows SmartScreen pode mostrar aviso. Para distribuicao interna isso pode ser aceitavel, desde que os usuarios baixem de uma fonte confiavel. Para distribuicao mais ampla, considere assinar o executavel com um certificado de code signing.
-
-## 8. Como gerar o APK para Android
-
-Na raiz do projeto, rode:
-
-```powershell
-flutter pub get
-flutter build apk --release
-```
-
-O APK fica em:
-
-```text
-build\app\outputs\flutter-apk\app-release.apk
-```
-
-Sugestao de nome:
-
-```text
-JABA-JOBS-Android-v1.0.0.apk
-```
-
-Para instalar fora da Play Store, o usuario precisa permitir instalacao de apps desconhecidos para o navegador, gerenciador de arquivos ou app pelo qual ele recebeu o APK.
-
-Antes de publicar, teste em um Android real:
-
-1. instale o APK;
-2. abra o Tailscale;
-3. conecte na tailnet do cluster;
-4. abra o JABA JOBS;
-5. faca login usando o IP Tailscale do `cluster-login`;
-6. teste Monitor, Logs e Config.
-
-Para publicar na Google Play, normalmente voce deve gerar um Android App Bundle:
-
-```powershell
-flutter build appbundle --release
-```
-
-O arquivo gerado fica em:
-
-```text
-build\app\outputs\bundle\release\app-release.aab
-```
-
-Para Play Store ou distribuicao profissional, configure assinatura de release e troque identificadores genericos como `com.example` por um package name real do projeto.
-
-## 9. Onde disponibilizar os arquivos
-
-Opcoes simples:
-
-- GitHub Releases: melhor opcao para projeto versionado. Crie uma release, anexe o `.zip` do Windows e o `.apk` do Android, escreva changelog e instrucoes.
-- Google Drive ou OneDrive: bom para distribuicao rapida para uma turma ou laboratorio. Use link com acesso controlado.
-- Pagina simples do projeto: uma pagina com botoes de download, versao atual, data, requisitos e changelog.
-
-Opcoes mais formais:
-
-- Microsoft Store: melhor para distribuicao Windows publica, mas exige empacotamento e conta de desenvolvedor.
-- Google Play: melhor para Android publico, mas exige conta de desenvolvedor, assinatura, politicas da loja e envio do `.aab`.
-
-Para uso interno do laboratorio, a forma mais pratica costuma ser:
-
-1. criar uma release no GitHub;
-2. anexar `JABA-JOBS-Windows-v1.0.0.zip`;
-3. anexar `JABA-JOBS-Android-v1.0.0.apk`;
-4. colocar no texto da release os requisitos: Tailscale, usuario SSH, senha e host do `cluster-login`;
-5. avisar que o Windows deve extrair o ZIP inteiro antes de abrir o app.
-
-## 10. Checklist antes de liberar uma versao
-
-- [ ] Atualizar `version` no `pubspec.yaml`.
-- [ ] Rodar `flutter pub get`.
-- [ ] Gerar build Windows release.
-- [ ] Gerar APK Android release.
-- [ ] Testar Windows em uma maquina diferente.
-- [ ] Testar Android em aparelho real.
-- [ ] Confirmar que o Tailscale conecta.
-- [ ] Confirmar login SSH no app.
-- [ ] Testar listagem de jobs.
-- [ ] Testar abertura de logs.
-- [ ] Testar submissao simples.
-- [ ] Compactar a pasta `Release` inteira para Windows.
-- [ ] Renomear artefatos com nome e versao.
-- [ ] Gerar hash SHA256 dos arquivos publicados.
-
-Comandos para gerar hash no Windows:
-
-```powershell
-Get-FileHash .\JABA-JOBS-Windows-v1.0.0.zip -Algorithm SHA256
-Get-FileHash .\JABA-JOBS-Android-v1.0.0.apk -Algorithm SHA256
-```
-
-Publique esses hashes junto dos downloads para quem baixar poder conferir a integridade dos arquivos.
+- VPN UNESP ou Tailscale configurado.
+- Conta SSH no cluster.
+- Host ou IP do `cluster-login`.
+- Wrappers do cluster configurados: `run-a4000`, `run-1660`, `myjobs`, `joblog`, `watchjob` e `canceljob`.
